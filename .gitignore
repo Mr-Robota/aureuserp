@@ -27,3 +27,6 @@ boost.json
 opencode.json
 /playwright-report
 /test-results
+/storage/
+/var/
+/bootstrap/cache/
