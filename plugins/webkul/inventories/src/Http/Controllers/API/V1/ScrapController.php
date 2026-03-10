@@ -195,6 +195,10 @@ class ScrapController extends Controller
         }
 
         return DB::transaction(function () use ($scrap) {
+            $baseQty = $scrap->uom && $scrap->product?->uom
+                ? $scrap->uom->computeQuantity($scrap->qty, $scrap->product->uom, false)
+                : $scrap->qty;
+
             $locationQuantity = ProductQuantity::query()
                 ->where('location_id', $scrap->source_location_id)
                 ->where('product_id', $scrap->product_id)
@@ -202,14 +206,14 @@ class ScrapController extends Controller
                 ->where('lot_id', $scrap->lot_id)
                 ->first();
 
-            if (! $locationQuantity || $locationQuantity->quantity < $scrap->qty) {
+            if (! $locationQuantity || $locationQuantity->quantity < $baseQty) {
                 return response()->json([
                     'message' => 'Insufficient source quantity for this scrap.',
                 ], 422);
             }
 
             $locationQuantity->update([
-                'quantity' => $locationQuantity->quantity - $scrap->qty,
+                'quantity' => $locationQuantity->quantity - $baseQty,
             ]);
 
             $destinationQuantity = ProductQuantity::query()
@@ -219,17 +223,17 @@ class ScrapController extends Controller
 
             if ($destinationQuantity) {
                 $destinationQuantity->update([
-                    'quantity'                => $destinationQuantity->quantity + $scrap->qty,
-                    'reserved_quantity'       => $destinationQuantity->reserved_quantity + $scrap->qty,
-                    'inventory_diff_quantity' => $destinationQuantity->inventory_diff_quantity - $scrap->qty,
+                    'quantity'                => $destinationQuantity->quantity + $baseQty,
+                    'reserved_quantity'       => $destinationQuantity->reserved_quantity + $baseQty,
+                    'inventory_diff_quantity' => $destinationQuantity->inventory_diff_quantity - $baseQty,
                 ]);
             } else {
                 ProductQuantity::create([
                     'product_id'              => $scrap->product_id,
                     'location_id'             => $scrap->destination_location_id,
-                    'quantity'                => $scrap->qty,
-                    'reserved_quantity'       => $scrap->qty,
-                    'inventory_diff_quantity' => -$scrap->qty,
+                    'quantity'                => $baseQty,
+                    'reserved_quantity'       => $baseQty,
+                    'inventory_diff_quantity' => -$baseQty,
                     'incoming_at'             => now(),
                     'creator_id'              => Auth::id(),
                     'company_id'              => $scrap->destinationLocation->company_id,
@@ -243,7 +247,7 @@ class ScrapController extends Controller
 
             $move = ProductFilamentResource::createMove(
                 $scrap,
-                $scrap->qty,
+                $baseQty,
                 $scrap->source_location_id,
                 $scrap->destination_location_id
             );
