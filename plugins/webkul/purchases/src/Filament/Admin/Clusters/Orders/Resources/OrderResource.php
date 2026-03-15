@@ -792,7 +792,7 @@ class OrderResource extends Resource
                 $action->requiresConfirmation();
 
                 $action->before(function (Action $action, $livewire) {
-                    if ($livewire->getRecord()->state === OrderState::PURCHASE) {
+                    if ($livewire->getRecord()?->state === OrderState::PURCHASE) {
                         Notification::make()
                             ->danger()
                             ->title(__('purchases::filament/admin/clusters/orders/resources/order.form.tabs.products.repeater.products.delete-action.error.title'))
@@ -1476,26 +1476,20 @@ class OrderResource extends Resource
     private static function handleRequisitionChange($state, Set $set, Get $get): void
     {
         if (! $state) {
-            $set('products', []);
-
-            $set('currency_id', null);
-
             return;
         }
 
         $requisition = Requisition::find($state);
 
         if (! $requisition) {
-            $set('products', []);
-
-            $set('currency_id', null);
-
             return;
         }
 
         $products = static::mapRequisitionLinesToProducts($requisition);
 
         $set('products', $products);
+
+        $set('currency_id', $requisition?->currency_id);
 
         foreach (array_keys($products) as $key) {
             self::calculateLineTotals($set, $get, "products.$key.");

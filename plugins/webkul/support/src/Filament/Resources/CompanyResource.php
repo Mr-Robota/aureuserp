@@ -90,7 +90,7 @@ class CompanyResource extends Resource
                                             ->label(__('support::filament/resources/company.form.sections.company-information.fields.name'))
                                             ->required()
                                             ->maxLength(255)
-                                            ->unique(ignoreRecord: true)
+                                            ->unique(table: 'companies', ignoreRecord: true)
                                             ->validationMessages([
                                                 'unique' => 'Company name already exists. Please use a unique name.',
                                             ])

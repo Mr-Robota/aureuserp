@@ -41,7 +41,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
 use Webkul\Field\Filament\Traits\HasCustomFields;
 use Webkul\Security\Enums\CompanyStatus;
 use Webkul\Security\Filament\Resources\CompanyResource\Pages\CreateCompany;
@@ -100,7 +99,7 @@ class CompanyResource extends Resource
                                             ->label(__('security::filament/resources/company.form.sections.company-information.fields.name'))
                                             ->required()
                                             ->maxLength(255)
-                                            ->unique(ignoreRecord: true)
+                                            ->unique(table: 'companies', ignoreRecord: true)
                                             ->validationMessages([
                                                 'unique' => 'Company name already exists. Please use a unique name.',
                                             ])

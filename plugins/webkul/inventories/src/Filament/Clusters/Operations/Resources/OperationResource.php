@@ -1268,14 +1268,14 @@ class OperationResource extends Resource
 
         $uom = UOM::find($uomId);
 
-        if (! $uom) {
+        if (! $uom || ! is_numeric($uom->factor) || $uom->factor == 0) {
             return 0;
         }
 
-        $referenceUom = UOM::where('category_id', $uom->category_id)->orderBy('factor')->first();
+        $referenceUom = UOM::where('category_id', $uom->category_id)->where('factor', 1)->first();
 
         if (! $referenceUom) {
-            return 0;
+            return self::normalizeZero((float) ($uomQuantity ?? 0) / $uom->factor);
         }
 
         $quantity = $uom->computeQuantity((float) ($uomQuantity ?? 0), $referenceUom, false);
