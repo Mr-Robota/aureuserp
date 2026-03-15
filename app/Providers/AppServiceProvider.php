@@ -7,10 +7,10 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\ServiceProvider;
+use Livewire\Livewire;
 use Webkul\Security\Models\User;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Routing\Router;
-use Illuminate\Routing\PendingResourceRegistration;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -59,5 +59,23 @@ class AppServiceProvider extends ServiceProvider
 
         Section::configureUsing(fn (Section $section) => $section
             ->columnSpanFull());
+
+        /*
+         * in case the application is hosted in a subdirectory
+         */
+        $prefix = trim(parse_url(config('app.url'), PHP_URL_PATH), '/');
+        $base = $prefix ? "/{$prefix}" : '';
+
+        Livewire::setScriptRoute(function ($handle) use ($base) {
+            return config('app.debug')
+                ? Route::get("{$base}/livewire/livewire.js", $handle)
+                : Route::get("{$base}/livewire/livewire.min.js", $handle);
+        });
+
+        Livewire::setUpdateRoute(function ($handle) use ($base) {
+            return Route::post("{$base}/livewire/update", $handle);
+        });
     }
+
+
 }
