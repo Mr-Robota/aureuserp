@@ -90,6 +90,64 @@ export class ErpLocators {
     readonly manageUsersEnableInvitationToggle: Locator;
     readonly settingsSaveButton: Locator;
 
+    /**
+     * Sales - Customers, Products, Quotations
+     */
+
+    readonly salesCustomersTable: Locator;
+    readonly salesCustomerCreateButton: Locator;
+    readonly salesCustomerNewCreateButton: Locator;
+    readonly salesCustomerNameInput: Locator;
+    readonly salesCustomerEmailInput: Locator;
+    readonly salesCustomerSaveButton: Locator;
+    readonly salesCustomerSearchInput: Locator;
+    readonly salesCustomerEditButton: Locator;
+    readonly salesCustomerDeleteButton: Locator;
+
+
+    readonly salesProductsTable: Locator;
+    readonly salesProductNewCreateButton: Locator;
+    readonly salesProductNameInput: Locator;
+    readonly salesProductCategorySelect: Locator;
+    readonly salesProductPriceInput: Locator;
+    readonly salesProductUomSelect: Locator;
+    readonly salesProductSaveButton: Locator;
+    readonly salesProductCreateButton: Locator;
+    readonly salesProductEditButton: Locator;
+    readonly salesProductDeleteButton: Locator;
+
+    readonly salesQuotationCreateButton: Locator;
+    readonly salesQuotationEditButton: Locator;
+    readonly salesQuotationCustomerSelect: Locator;
+    readonly salesQuotationPaymentTermSelect: Locator;
+    readonly salesQuotationAddProductButton: Locator;
+    readonly salesQuotationProductSelectInput: Locator;
+    readonly salesQuotationQuantityInput: Locator;
+    readonly salesQuotationSaveButton: Locator;
+    readonly salesQuotationDeleteButton: Locator;
+    readonly salesQuotationConfirmButton: Locator;
+    readonly salesQuotationSendButton: Locator;
+    readonly salesQuotationSendSubmitButton: Locator;
+    readonly salesQuotationSentRadio: Locator;
+    readonly salesQuotationCreateInvoiceButton: Locator;
+    readonly salesQuotationInvoiceSubmitButton: Locator;
+    readonly salesQuotationDeliveriesTable: Locator;
+    readonly salesQuotationDeliveryEditButton: Locator;
+    readonly salesDeliveryValidateButton: Locator;
+    readonly salesDeliveryNoBackorderButton: Locator;
+    readonly salesInvoicesTable: Locator;
+
+    readonly salesSearchInput: Locator;
+    readonly salesRowActionsButton: Locator;
+    readonly salesEditAction: Locator;
+    readonly salesDeleteAction: Locator;
+    readonly salesConfirmDeleteButton: Locator;
+
+    readonly salesSelectSearchInput: Locator;
+    readonly salesSelectOption: Locator;
+    readonly salesSuccessToast: Locator;
+    readonly salesValidationMessage: Locator;
+
     constructor(page: Page) {
         this.page = page;
 
@@ -181,5 +239,62 @@ export class ErpLocators {
         this.manageUsersEnableResetToggle = page.getByRole("switch", { name: /Enable Reset Password/i });
         this.manageUsersEnableInvitationToggle = page.getByRole("switch", { name: /Enable User Invitation/i });
         this.settingsSaveButton = page.getByRole("button", { name: /Save changes|save|update|submit/i }).first();
+
+        /**
+         * Sales - Customers, Products, Quotations
+         */
+
+        this.salesCustomersTable = page.locator("div.fi-ta-content-grid, div.fi-ta-empty-state, table");
+        this.salesCustomerNewCreateButton = page.locator("a,button").filter({ hasText: /new customer|create customer|add customer|create/i }).first();
+        this.salesCustomerNameInput = page.locator('input[id="form.name"]').first();
+        this.salesCustomerEmailInput = page.locator('input[id="form.email"]').first();
+        this.salesCustomerCreateButton = page.locator('button[id="key-bindings-1"]').first();
+        this.salesCustomerSaveButton = page.locator('button[id="key-bindings-2"]').first();
+        this.salesCustomerDeleteButton = page.locator('button[id="key-bindings-1"]').first();
+        this.salesCustomerSearchInput = page.locator('.fi-input.fi-input-has-inline-prefix').nth(1);
+        this.salesCustomerEditButton = page.getByRole('link', { name: 'Edit' }).first();
+
+        this.salesProductsTable = page.locator("table, div.fi-ta-empty-state");
+        this.salesProductNewCreateButton = page.locator("a,button").filter({ hasText: /new product|create product|add product|create/i }).first();
+        this.salesProductNameInput = page.locator('input[id="form.name"]').first();
+        this.salesProductCategorySelect = page.locator('input[id="form.category_id"], [role="combobox"][aria-label*="Category"], [role="combobox"][aria-labelledby*="Category"]').first();
+        this.salesProductPriceInput = page.locator('input[id="form.price"]').first();
+        this.salesProductUomSelect = page.locator('input[id="form.uom_id"], [role="combobox"][aria-label*="UOM"], [role="combobox"][aria-labelledby*="UOM"]').first();
+        this.salesProductCreateButton = page.locator('button[id="key-bindings-1"]').first();
+        this.salesProductEditButton = page.getByRole('link', { name: 'Edit' });
+        this.salesProductSaveButton = page.locator('button[id="key-bindings-2"]').first();
+        this.salesProductDeleteButton = page.getByRole('button', { name: 'Delete' });
+
+        this.salesQuotationCreateButton = page.locator("a,button").filter({ hasText: /new quotation|create quotation|add quotation|create/i }).first();
+        this.salesQuotationEditButton = page.getByRole('link', { name: 'Edit' }).first();
+        this.salesQuotationCustomerSelect = page.locator('[wire\\:key$="form.partner_id"] button.fi-select-input-btn').first();
+        this.salesQuotationPaymentTermSelect = page.locator('[wire\\:key$="form.payment_term_id"] button.fi-select-input-btn').first();
+        this.salesQuotationAddProductButton = page.getByRole("button", { name: /Add Product/i }).first();
+        this.salesQuotationProductSelectInput = page.locator('[wire\\:key*=".form.products."][wire\\:key*=".product_id."] button.fi-select-input-btn');
+        this.salesQuotationQuantityInput = page.locator('input[id^="form.products."][id$=".product_qty"]');
+        this.salesQuotationDeleteButton = page.getByRole('button', { name: 'Delete' }).first();
+        this.salesQuotationSaveButton = page.getByRole('button', { name: /^(Create|Save changes|Submit)$/i }).first();
+        this.salesQuotationConfirmButton = page.getByRole("button", { name: /Confirm/i }).first();
+        this.salesQuotationSendButton = page.getByRole("button", { name: /Send by Email|Send/i }).first();
+        this.salesQuotationSendSubmitButton = page.getByRole("dialog").getByRole("button", { name: /Send|Submit/i }).first(); 
+        this.salesQuotationSentRadio = page.getByRole("radio", { name: /Quotation Sent/i });
+        this.salesQuotationCreateInvoiceButton = page.getByRole("button", { name: /Create Invoice/i }).first();
+        this.salesQuotationInvoiceSubmitButton = page.getByRole("dialog").getByRole("button", { name: /Create Invoice/i }).first();
+        this.salesQuotationDeliveriesTable = page.locator("table, div.fi-ta-empty-state");
+        this.salesQuotationDeliveryEditButton = page.getByRole('table').getByRole('link', { name: 'Edit' });
+        this.salesDeliveryValidateButton = page.getByRole("button", { name: /Validate/i }).first();
+        this.salesDeliveryNoBackorderButton = page.getByRole("button", { name: /No Backorder/i }).first();
+        this.salesInvoicesTable = page.locator("table, div.fi-ta-empty-state");
+
+        this.salesSearchInput = page.locator(".fi-input.fi-input-has-inline-prefix").nth(1);
+        this.salesRowActionsButton = page.getByRole('button', { name: 'Actions' });
+        this.salesEditAction = page.getByRole("menuitem", { name: /Edit/i }).first();
+        this.salesDeleteAction = page.getByRole("menuitem", { name: /Delete/i }).first();
+        this.salesConfirmDeleteButton = page.getByRole("dialog").getByRole("button", { name: /Delete/i }).first();
+
+        this.salesSelectSearchInput = page.locator('.fi-dropdown-panel[role="listbox"]:visible input.fi-input[aria-label="Search"]').last();
+        this.salesSelectOption = page.locator('.fi-dropdown-panel[role="listbox"]:visible [role="option"]');
+        this.salesSuccessToast = page.locator("h3.fi-no-notification-title, .fi-toast-message-success").first();
+        this.salesValidationMessage = page.locator(".fi-fo-field-wrp-error-message, .text-danger, .invalid-feedback");
     }
 }

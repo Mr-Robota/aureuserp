@@ -439,48 +439,29 @@ trait HasTableViews
 
     public function getTableViewActionGroup(string $key, string $type, mixed $tableView): ActionGroup
     {
+        $args = [
+            'view_key'  => $key,
+            'view_type' => $type,
+        ];
+
         return ActionGroup::make([
-            $this->applyTableViewAction()
-                ->arguments([
-                    'view_key'  => $key,
-                    'view_type' => $type,
-                ])
+            ($this->applyTableViewAction())($args)
                 ->visible(fn () => $key != $this->activeTableView),
 
-            $this->addTableViewToFavoritesAction()
-                ->arguments([
-                    'view_key'  => $key,
-                    'view_type' => $type,
-                ])
+            ($this->addTableViewToFavoritesAction())($args)
                 ->visible(fn () => ! $tableView->isFavorite($key)),
 
-            $this->removeTableViewFromFavoritesAction()
-                ->arguments([
-                    'view_key'  => $key,
-                    'view_type' => $type,
-                ])
+            ($this->removeTableViewFromFavoritesAction())($args)
                 ->visible(fn () => $tableView->isFavorite($key)),
 
-            $this->editTableViewAction(['view_model' => $tableView->getModel()])
-                ->arguments([
-                    'view_key'  => $key,
-                    'view_type' => $type,
-                ])
+            ($this->editTableViewAction(['view_model' => $tableView->getModel()]))($args)
                 ->visible(fn () => $tableView->isEditable()),
 
             ActionGroup::make([
-                $this->replaceTableViewAction()
-                    ->arguments([
-                        'view_key'  => $key,
-                        'view_type' => $type,
-                    ])
+                ($this->replaceTableViewAction())($args)
                     ->visible(fn () => $tableView->isReplaceable() && $key == $this->activeTableView && $this->isActiveTableViewModified()),
 
-                $this->deleteTableViewAction()
-                    ->arguments([
-                        'view_key'  => $key,
-                        'view_type' => $type,
-                    ])
+                ($this->deleteTableViewAction())($args)
                     ->visible(fn () => $key == $tableView->isDeletable()),
             ])->dropdown(false),
         ])->dropdownPlacement('bottom-end');

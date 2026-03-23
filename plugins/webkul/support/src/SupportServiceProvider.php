@@ -5,9 +5,6 @@ namespace Webkul\Support;
 use Filament\Panel;
 use Filament\Support\Assets\Css;
 use Filament\Support\Facades\FilamentAsset;
-use Filament\Support\Facades\FilamentView;
-use Filament\View\PanelsRenderHook;
-use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
 use Livewire\Livewire;
 use Webkul\PluginManager\Package;
@@ -15,9 +12,16 @@ use Webkul\PluginManager\PackageServiceProvider;
 use Webkul\Security\Livewire\AcceptInvitation;
 use Webkul\Security\Models\Role;
 use Webkul\Security\Policies\RolePolicy;
+use Webkul\Support\Traits\HasFilamentDefaults;
+use Webkul\Support\Traits\HasRouterMacros;
+use Webkul\Support\Traits\HasRtlSupport;
 
 class SupportServiceProvider extends PackageServiceProvider
 {
+    use HasFilamentDefaults;
+    use HasRouterMacros;
+    use HasRtlSupport;
+
     public static string $name = 'support';
 
     public static string $viewNamespace = 'support';
@@ -57,6 +61,7 @@ class SupportServiceProvider extends PackageServiceProvider
                 '2025_08_08_104814_alter_utm_campaigns_table',
                 '2025_10_10_080114_create_currency_rates_table',
                 '2025_11_14_102615_alter_currency_rates_table',
+                '2026_03_18_000001_alter_unit_of_measures_factor_precision',
             ])
             ->runsMigrations();
     }
@@ -69,9 +74,6 @@ class SupportServiceProvider extends PackageServiceProvider
 
         Gate::policy(Role::class, RolePolicy::class);
 
-        /**
-         * Route to access template applied image file
-         */
         $this->app['router']->get('cache/{filename}', [
             'uses' => 'Webkul\Support\Http\Controllers\ImageCacheController@getImage',
             'as'   => 'image_cache',
@@ -80,6 +82,12 @@ class SupportServiceProvider extends PackageServiceProvider
         FilamentAsset::register([
             Css::make('support', __DIR__.'/../resources/dist/support.css'),
         ], 'support');
+
+        $this->registerFilamentDefaults();
+
+        $this->registerLanguageSwitch();
+
+        $this->registerRtlSupport();
     }
 
     public function packageRegistered(): void
@@ -89,31 +97,7 @@ class SupportServiceProvider extends PackageServiceProvider
         });
 
         $this->registerHooks();
-    }
 
-    protected function registerHooks(): void
-    {
-        $version = '1.3.0-BETA3';
-
-        FilamentView::registerRenderHook(
-            PanelsRenderHook::USER_MENU_PROFILE_BEFORE,
-            fn (): string => Blade::render(<<<'BLADE'
-                <x-filament::dropdown.list>
-                    <x-filament::dropdown.list.item>
-                        <div class="flex items-center gap-2">
-                            <img
-                                src="{{ url('cache/logo.png') }}"
-                                width="24"
-                                height="24"
-                            />
-
-                            {{ __('support::support.version', ['version' => $version]) }} 
-                        </div>
-                    </x-filament::dropdown.list.item>
-                </x-filament::dropdown.list>
-            BLADE, [
-                'version' => $version,
-            ]),
-        );
+        $this->registerRouterMacros();
     }
 }
