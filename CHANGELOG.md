@@ -1,3 +1,14 @@
+# 🚀 CHANGELOG — v1.3.1
+
+### ✨ Improvements
+
+* Refactor RTL support and add traits for Filament defaults and router macros and refactor providers.
+
+### 🐛 Fixes
+
+* [fixed] - Update temporary file upload configuration to set default disk and add authentication middleware
+* [fixed] - Fixed table views issue
+
 # 🚀 CHANGELOG — v1.3.0
 
 ### 🧩 Features

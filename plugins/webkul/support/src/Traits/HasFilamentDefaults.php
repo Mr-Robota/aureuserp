@@ -22,7 +22,7 @@ trait HasFilamentDefaults
 
     protected function registerHooks(): void
     {
-        $version = '1.3.0';
+        $version = '1.3.1';
 
         FilamentView::registerRenderHook(
             PanelsRenderHook::USER_MENU_PROFILE_BEFORE,
